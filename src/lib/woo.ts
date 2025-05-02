@@ -24,9 +24,9 @@ interface WooCommerceOrder {
     }>;
 }
 
-const WOOCOMMERCE_URL = process.env.NEXT_PUBLIC_WOOCOMMERCE_URL!!
-const CONSUMER_KEY = process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY!!
-const CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_SECRET!!
+const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL!!
+const CONSUMER_KEY = process.env.WOOCOMMERCE_CONSUMER_KEY!!
+const CONSUMER_SECRET = process.env.WOOCOMMERCE_CONSUMER_SECRET!!
 
 function put(api: string, body: any, query?: URLSearchParams) {
     return call("PUT", api, query, body);
