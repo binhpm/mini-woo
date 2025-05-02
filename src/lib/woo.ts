@@ -96,24 +96,28 @@ function updateOrderInfo(orderId: number, shippingInfo: ShippingInfo) {
         shipping: {
             first_name: shippingInfo.name.split(' ')[0] || shippingInfo.name,
             last_name: shippingInfo.name.split(' ').slice(1).join(' ') || shippingInfo.name,
+            company: '',
             address_1: shippingInfo.address.street_line1,
-            address_2: shippingInfo.address.street_line2,
+            address_2: shippingInfo.address.street_line2 || '',
             city: shippingInfo.address.city,
-            state: shippingInfo.address.state,
+            state: shippingInfo.address.state || '',
             postcode: shippingInfo.address.post_code,
             country: shippingInfo.address.country_code,
+            email: shippingInfo.email || '',
+            phone: shippingInfo.phone || ''
         },
         billing: {
             first_name: shippingInfo.name.split(' ')[0] || shippingInfo.name,
             last_name: shippingInfo.name.split(' ').slice(1).join(' ') || shippingInfo.name,
-            email: shippingInfo.email,
-            phone: shippingInfo.phone,
+            company: '',
             address_1: shippingInfo.address.street_line1,
-            address_2: shippingInfo.address.street_line2,
+            address_2: shippingInfo.address.street_line2 || '',
             city: shippingInfo.address.city,
-            state: shippingInfo.address.state,
+            state: shippingInfo.address.state || '',
             postcode: shippingInfo.address.post_code,
             country: shippingInfo.address.country_code,
+            email: shippingInfo.email || '',
+            phone: shippingInfo.phone || ''
         }
     }
     return updateOrder(orderId, update)

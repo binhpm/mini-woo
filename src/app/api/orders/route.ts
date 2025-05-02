@@ -44,24 +44,25 @@ export async function POST(request: NextRequest) {
         quantity: item.count
     }));
 
+    // Create order first
     const order = await woo.createOrder(line_items, body.comment || '', paymentMethod);
 
-    // Update shipping information if provided (for COD)
+    // Update shipping information for COD orders
     if (paymentMethod === 'cod' && body.shippingInfo) {
-        const shippingInfo = {
-            name: body.shippingInfo.name,
-            email: body.shippingInfo.email,
-            phone: body.shippingInfo.phone,
-            address: {
-                street_line1: body.shippingInfo.address.street_line1,
-                street_line2: body.shippingInfo.address.street_line2,
-                city: body.shippingInfo.address.city,
-                state: body.shippingInfo.address.state,
-                country_code: body.shippingInfo.address.country_code,
-                post_code: body.shippingInfo.address.post_code
-            }
-        };
-        await woo.updateOrderInfo(order.id, shippingInfo);
+        // Validate required shipping fields
+        if (!body.shippingInfo.name || 
+            !body.shippingInfo.phone || 
+            !body.shippingInfo.address.street_line1 || 
+            !body.shippingInfo.address.city || 
+            !body.shippingInfo.address.country_code || 
+            !body.shippingInfo.address.post_code) {
+            return NextResponse.json({ error: 'Missing required shipping information' }, { status: 400 });
+        }
+
+        const shippingUpdateRes = await woo.updateOrderInfo(order.id, body.shippingInfo);
+        if (shippingUpdateRes.status !== 200) {
+            return NextResponse.json({ error: 'Failed to update shipping information' }, { status: 500 });
+        }
     }
 
     const response: OrderResponse = {
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(response);
     }
 
-    // Handle Telegram payment for non-COD orders
+    // Handle Telegram payment
     const telegramCurrency = telegramCurrencies[order.currency as keyof typeof telegramCurrencies];
     if (!telegramCurrency) {
         throw new Error(`Unsupported currency: ${order.currency}`);

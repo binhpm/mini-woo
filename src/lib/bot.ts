@@ -37,26 +37,37 @@ bot.on("pre_checkout_query", async (ctx) => {
     const payload = JSON.parse(ctx.update.pre_checkout_query.invoice_payload)
     const orderInfo = ctx.update.pre_checkout_query.order_info!!
     
-    // Convert Telegram's OrderInfo to our ShippingInfo type with null checks
+    // Convert Telegram's OrderInfo to our ShippingInfo type with proper validation
     const shippingInfo = {
-        name: orderInfo.name || 'Unknown',
+        name: orderInfo.name,
         email: orderInfo.email,
         phone: orderInfo.phone_number,
         address: {
-            street_line1: orderInfo.shipping_address?.street_line1 || 'No address provided',
-            street_line2: orderInfo.shipping_address?.street_line2,
-            city: orderInfo.shipping_address?.city || 'No city provided',
-            state: orderInfo.shipping_address?.state,
-            country_code: orderInfo.shipping_address?.country_code || 'XX',
-            post_code: orderInfo.shipping_address?.post_code || '00000'
+            street_line1: orderInfo.shipping_address?.street_line1 || '',
+            street_line2: orderInfo.shipping_address?.street_line2 || '',
+            city: orderInfo.shipping_address?.city || '',
+            state: orderInfo.shipping_address?.state || '',
+            country_code: orderInfo.shipping_address?.country_code || '',
+            post_code: orderInfo.shipping_address?.post_code || ''
         }
     };
+
+    // Validate required shipping fields
+    if (!shippingInfo.name || 
+        !shippingInfo.phone || 
+        !shippingInfo.address.street_line1 || 
+        !shippingInfo.address.city || 
+        !shippingInfo.address.country_code || 
+        !shippingInfo.address.post_code) {
+        await ctx.answerPreCheckoutQuery(false, "Please provide complete shipping information!");
+        return;
+    }
 
     const res = await woo.updateOrderInfo(payload.orderId, shippingInfo)
     if (res.status === 200)
         await ctx.answerPreCheckoutQuery(true);
     else
-        await ctx.answerPreCheckoutQuery(false, "Problem occurred during update order, contact support!");
+        await ctx.answerPreCheckoutQuery(false, "Problem occurred during order update. Please try again or contact support.");
 });
 
 bot.on(message("successful_payment"), async (ctx) => {
