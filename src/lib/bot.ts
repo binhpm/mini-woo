@@ -39,9 +39,9 @@ bot.on("pre_checkout_query", async (ctx) => {
     
     // Convert Telegram's OrderInfo to our ShippingInfo type with proper validation
     const shippingInfo = {
-        name: orderInfo.name,
-        email: orderInfo.email,
-        phone: orderInfo.phone_number,
+        name: orderInfo.name || '',
+        email: orderInfo.email || '',
+        phone: orderInfo.phone_number || '',
         address: {
             street_line1: orderInfo.shipping_address?.street_line1 || '',
             street_line2: orderInfo.shipping_address?.street_line2 || '',
