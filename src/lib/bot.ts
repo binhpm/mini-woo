@@ -12,7 +12,7 @@ const bot = new Telegraf(BOT_TOKEN)
 bot.start((ctx) => {
     ctx.reply(
         "Let's get started ;)",
-        Markup.inlineKeyboard([Markup.button.webApp("View Store", BASE_PATH)]),
+        Markup.inlineKeyboard([Markup.button.webApp("View Menu", BASE_PATH)]),
     )
 });
 bot.help((ctx) => ctx.reply("Test /start or /menu command!"))

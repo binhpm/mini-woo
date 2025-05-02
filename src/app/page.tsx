@@ -74,8 +74,27 @@ export default function Home() {
 
             if (result.payment_method === 'cod') {
                 webApp?.MainButton.hideProgress()
-                webApp?.showAlert(`Order #${result.order_id} has been placed successfully! You will pay on delivery.`)
-                webApp?.close()
+                const message = `Order #${result.order_id} has been placed successfully!\n\n` +
+                              `Delivery Address:\n` +
+                              `${state.shippingInfo?.name}\n` +
+                              `${state.shippingInfo?.address.street_line1}\n` +
+                              `${state.shippingInfo?.address.street_line2 ? state.shippingInfo?.address.street_line2 + '\n' : ''}` +
+                              `${state.shippingInfo?.address.city}, ${state.shippingInfo?.address.state || ''}\n` +
+                              `${state.shippingInfo?.address.country_code} ${state.shippingInfo?.address.post_code}\n\n` +
+                              `Contact:\n` +
+                              `Phone: ${state.shippingInfo?.phone}\n` +
+                              `${state.shippingInfo?.email ? 'Email: ' + state.shippingInfo.email + '\n' : ''}` +
+                              `\nPayment Method: Cash on Delivery\n` +
+                              `${state.comment ? '\nOrder Notes:\n' + state.comment : ''}`
+                
+                webApp?.showPopup({
+                    title: 'Order Confirmed!',
+                    message: message,
+                    buttons: [{
+                        type: 'ok',
+                        text: 'Close'
+                    }]
+                }, () => webApp?.close())
                 return
             }
 
@@ -91,10 +110,25 @@ export default function Home() {
                 webApp?.MainButton.hideProgress()
                 if (status === 'paid') {
                     console.log("[paid] InvoiceStatus " + result.order_id)
-                    webApp?.close()
+                    webApp?.showPopup({
+                        title: 'Payment Successful!',
+                        message: `Order #${result.order_id} has been confirmed.\nThank you for your purchase!`,
+                        buttons: [{
+                            type: 'ok',
+                            text: 'Close'
+                        }]
+                    }, () => webApp?.close())
                 } else if (status === 'failed') {
                     console.log("[failed] InvoiceStatus " + result.order_id)
                     webApp?.HapticFeedback.notificationOccurred('error')
+                    webApp?.showPopup({
+                        title: 'Payment Failed',
+                        message: 'Your payment could not be processed. Please try again.',
+                        buttons: [{
+                            type: 'ok',
+                            text: 'OK'
+                        }]
+                    })
                 } else if (status === 'cancelled') {
                     console.log("[cancelled] InvoiceStatus " + result.order_id)
                     webApp?.HapticFeedback.notificationOccurred('warning')
