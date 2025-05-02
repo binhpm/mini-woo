@@ -28,6 +28,20 @@ const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL!!
 const CONSUMER_KEY = process.env.WOOCOMMERCE_CONSUMER_KEY!!
 const CONSUMER_SECRET = process.env.WOOCOMMERCE_CONSUMER_SECRET!!
 
+interface ShippingInfo {
+    name: string;
+    email?: string;
+    phone?: string;
+    address: {
+        street_line1: string;
+        street_line2?: string;
+        city: string;
+        state?: string;
+        country_code: string;
+        post_code: string;
+    };
+}
+
 function put(api: string, body: any, query?: URLSearchParams) {
     return call("PUT", api, query, body);
 }
@@ -77,29 +91,29 @@ function updateOrder(orderId: number, update: any) {
     return put(`orders/${orderId}`, update)
 }
 
-function updateOrderInfo(orderId: number, orderInfo: OrderInfo) {
+function updateOrderInfo(orderId: number, shippingInfo: ShippingInfo) {
     const update = {
         shipping: {
-            first_name: orderInfo.name,
-            last_name: orderInfo.name,
-            address_1: orderInfo.shipping_address?.street_line1,
-            address_2: orderInfo.shipping_address?.street_line2,
-            city: orderInfo.shipping_address?.city,
-            state: orderInfo.shipping_address?.state,
-            postcode: orderInfo.shipping_address?.post_code,
-            country: orderInfo.shipping_address?.country_code,
+            first_name: shippingInfo.name.split(' ')[0] || shippingInfo.name,
+            last_name: shippingInfo.name.split(' ').slice(1).join(' ') || shippingInfo.name,
+            address_1: shippingInfo.address.street_line1,
+            address_2: shippingInfo.address.street_line2,
+            city: shippingInfo.address.city,
+            state: shippingInfo.address.state,
+            postcode: shippingInfo.address.post_code,
+            country: shippingInfo.address.country_code,
         },
         billing: {
-            first_name: orderInfo.name,
-            last_name: orderInfo.name,
-            email: orderInfo.email,
-            phone: orderInfo.phone_number,
-            address_1: orderInfo.shipping_address?.street_line1,
-            address_2: orderInfo.shipping_address?.street_line2,
-            city: orderInfo.shipping_address?.city,
-            state: orderInfo.shipping_address?.state,
-            postcode: orderInfo.shipping_address?.post_code,
-            country: orderInfo.shipping_address?.country_code,
+            first_name: shippingInfo.name.split(' ')[0] || shippingInfo.name,
+            last_name: shippingInfo.name.split(' ').slice(1).join(' ') || shippingInfo.name,
+            email: shippingInfo.email,
+            phone: shippingInfo.phone,
+            address_1: shippingInfo.address.street_line1,
+            address_2: shippingInfo.address.street_line2,
+            city: shippingInfo.address.city,
+            state: shippingInfo.address.state,
+            postcode: shippingInfo.address.post_code,
+            country: shippingInfo.address.country_code,
         }
     }
     return updateOrder(orderId, update)

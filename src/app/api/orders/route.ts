@@ -48,7 +48,20 @@ export async function POST(request: NextRequest) {
 
     // Update shipping information if provided (for COD)
     if (paymentMethod === 'cod' && body.shippingInfo) {
-        await woo.updateOrderInfo(order.id, body.shippingInfo);
+        const shippingInfo = {
+            name: body.shippingInfo.name,
+            email: body.shippingInfo.email,
+            phone: body.shippingInfo.phone,
+            address: {
+                street_line1: body.shippingInfo.address.street_line1,
+                street_line2: body.shippingInfo.address.street_line2,
+                city: body.shippingInfo.address.city,
+                state: body.shippingInfo.address.state,
+                country_code: body.shippingInfo.address.country_code,
+                post_code: body.shippingInfo.address.post_code
+            }
+        };
+        await woo.updateOrderInfo(order.id, shippingInfo);
     }
 
     const response: OrderResponse = {
