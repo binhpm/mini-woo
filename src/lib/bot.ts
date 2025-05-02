@@ -36,7 +36,23 @@ bot.on("shipping_query", async (ctx) => {
 bot.on("pre_checkout_query", async (ctx) => {
     const payload = JSON.parse(ctx.update.pre_checkout_query.invoice_payload)
     const orderInfo = ctx.update.pre_checkout_query.order_info!!
-    const res = await woo.updateOrderInfo(payload.orderId, orderInfo)
+    
+    // Convert Telegram's OrderInfo to our ShippingInfo type with null checks
+    const shippingInfo = {
+        name: orderInfo.name || 'Unknown',
+        email: orderInfo.email,
+        phone: orderInfo.phone_number,
+        address: {
+            street_line1: orderInfo.shipping_address?.street_line1 || 'No address provided',
+            street_line2: orderInfo.shipping_address?.street_line2,
+            city: orderInfo.shipping_address?.city || 'No city provided',
+            state: orderInfo.shipping_address?.state,
+            country_code: orderInfo.shipping_address?.country_code || 'XX',
+            post_code: orderInfo.shipping_address?.post_code || '00000'
+        }
+    };
+
+    const res = await woo.updateOrderInfo(payload.orderId, shippingInfo)
     if (res.status === 200)
         await ctx.answerPreCheckoutQuery(true);
     else
