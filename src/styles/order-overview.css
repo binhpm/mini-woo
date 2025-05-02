@@ -128,3 +128,40 @@
     padding: 10px 20px 24px;
     color: var(--hint-color);
 }
+
+.payment-methods {
+    padding: 5px 20px;
+}
+
+.payment-method {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    cursor: pointer;
+    transition: background-color var(--animation);
+}
+
+.payment-method.selected {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.payment-method-title {
+    font-size: 15px;
+    line-height: 18px;
+    font-weight: 700;
+}
+
+.payment-method-desc {
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--page-hint-color);
+    margin-top: 4px;
+}
+
+.payment-method.selected .payment-method-desc {
+    color: rgba(255, 255, 255, 0.7);
+}

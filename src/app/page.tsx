@@ -6,24 +6,30 @@ import StoreFront from "@/components/store-front";
 import OrderOverview from "@/components/order-overview";
 import ProductOverview from "@/components/product-overview";
 
+type OrderItem = {
+    id: number;
+    count: number;
+}
+
+type PaymentStatus = 'paid' | 'failed' | 'unknown';
+
 export default function Home() {
     const {webApp, user} = useTelegram()
     const {state, dispatch} = useAppContext()
 
     const handleCheckout = useCallback(async () => {
-        console.log("checkout!")
         webApp?.MainButton.showProgress()
-        const invoiceSupported = webApp?.isVersionAtLeast('6.1');
-        const items = Array.from(state.cart.values()).map((item) => ({
+        const items: OrderItem[] = Array.from(state.cart.values()).map((item) => ({
             id: item.product.id,
             count: item.count
         }))
+        
         const body = JSON.stringify({
             userId: user?.id,
             chatId: webApp?.initDataUnsafe.chat?.id,
-            invoiceSupported,
             comment: state.comment,
             shippingZone: state.shippingZone,
+            paymentMethod: state.paymentMethod,
             items
         })
 
@@ -31,30 +37,43 @@ export default function Home() {
             const res = await fetch("api/orders", {method: "POST", body})
             const result = await res.json()
 
-            if (invoiceSupported) {
-                webApp?.openInvoice(result.invoice_link, function (status) {
-                    webApp?.MainButton.hideProgress()
-                    if (status == 'paid') {
-                        console.log("[paid] InvoiceStatus " + result);
-                        webApp?.close();
-                    } else if (status == 'failed') {
-                        console.log("[failed] InvoiceStatus " + result);
-                        webApp?.HapticFeedback.notificationOccurred('error');
-                    } else {
-                        console.log("[unknown] InvoiceStatus" + result);
-                        webApp?.HapticFeedback.notificationOccurred('warning');
-                    }
-                });
-            } else {
-                webApp?.showAlert("Some features not available. Please update your telegram app!")
+            if (result.payment_method === 'cod') {
+                webApp?.MainButton.hideProgress()
+                webApp?.showAlert(`Order #${result.order_id} has been placed successfully! You will pay on delivery.`)
+                webApp?.close()
+                return
             }
-        } catch (_) {
-            webApp?.showAlert("Some error occurred while processing order!")
+
+            // Handle Telegram payment
+            const invoiceSupported = webApp?.isVersionAtLeast('6.1')
+            if (!invoiceSupported) {
+                webApp?.showAlert("Telegram payment requires app version 6.1 or higher. Please update your Telegram app!")
+                webApp?.MainButton.hideProgress()
+                return
+            }
+
+            webApp?.openInvoice(result.invoice_link, (status) => {
+                webApp?.MainButton.hideProgress()
+                if (status === 'paid') {
+                    console.log("[paid] InvoiceStatus " + result.order_id)
+                    webApp?.close()
+                } else if (status === 'failed') {
+                    console.log("[failed] InvoiceStatus " + result.order_id)
+                    webApp?.HapticFeedback.notificationOccurred('error')
+                } else if (status === 'cancelled') {
+                    console.log("[cancelled] InvoiceStatus " + result.order_id)
+                    webApp?.HapticFeedback.notificationOccurred('warning')
+                } else if (status === 'pending') {
+                    console.log("[pending] InvoiceStatus " + result.order_id)
+                    webApp?.HapticFeedback.notificationOccurred('warning')
+                }
+            })
+        } catch (error) {
+            console.error('Checkout error:', error)
+            webApp?.showAlert("An error occurred while processing your order!")
             webApp?.MainButton.hideProgress()
         }
-
-
-    }, [webApp, state.cart, state.comment, state.shippingZone])
+    }, [webApp, user, state.cart, state.comment, state.shippingZone, state.paymentMethod])
 
     useEffect(() => {
         const callback = state.mode === "order" ? handleCheckout :

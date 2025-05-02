@@ -14,10 +14,12 @@ type Action =
     | { type: "inc", product: Product }
     | { type: "dec", product: Product }
     | { type: "comment", comment: string }
+    | { type: "payment-method", method: PaymentMethod }
 
 type Dispatch = (action: Action) => void
 
 type Mode = 'storefront' | 'order' | 'item'
+type PaymentMethod = 'cod' | 'telegram'
 
 export type CartItem = {
     product: Product,
@@ -54,6 +56,7 @@ type State = {
     cart: Map<number, CartItem>
     comment?: string,
     shippingZone: number,
+    paymentMethod: PaymentMethod
 }
 
 const StateContext = React.createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
@@ -120,6 +123,10 @@ function contextReducer(state: State, action: Action) {
             state.comment = action.comment
             break
         }
+        case 'payment-method': {
+            state.paymentMethod = action.method
+            break
+        }
         default: {
             throw new Error(`Unhandled action: ${action}`)
         }
@@ -141,6 +148,7 @@ function ContextProvider({children}: {
         categories: [],
         cart: new Map<number, CartItem>(),
         shippingZone: 1,
+        paymentMethod: 'cod'
     }
     const [state, dispatch] = React.useReducer(contextReducer, init)
     // NOTE: you *might* need to memoize this value

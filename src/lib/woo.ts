@@ -1,8 +1,32 @@
-import {OrderInfo} from "@telegraf/types";
+interface OrderInfo {
+    name?: string;
+    email?: string;
+    phone_number?: string;
+    shipping_address?: {
+        street_line1?: string;
+        street_line2?: string;
+        city?: string;
+        state?: string;
+        country_code?: string;
+        post_code?: string;
+    };
+}
 
-const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL!!
-const CONSUMER_KEY = process.env.WOOCOMMERCE_CONSUMER_KEY!!
-const CONSUMER_SECRET = process.env.WOOCOMMERCE_CONSUMER_SECRET!!
+interface WooCommerceOrder {
+    id: number;
+    order_key: string;
+    currency: string;
+    payment_method: string;
+    line_items: Array<{
+        name: string;
+        quantity: number;
+        total: string;
+    }>;
+}
+
+const WOOCOMMERCE_URL = process.env.NEXT_PUBLIC_WOOCOMMERCE_URL!!
+const CONSUMER_KEY = process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY!!
+const CONSUMER_SECRET = process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_SECRET!!
 
 function put(api: string, body: any, query?: URLSearchParams) {
     return call("PUT", api, query, body);
@@ -37,11 +61,13 @@ function call(method: string, api: string, query?: URLSearchParams, body?: any) 
     return fetch(url, init);
 }
 
-async function createOrder(line_items: any[], customer_note: string) {
+async function createOrder(line_items: any[], customer_note: string, payment_method: string = 'cod'): Promise<WooCommerceOrder> {
     const body = {
         "set_paid": false,
         line_items,
         customer_note,
+        payment_method,
+        payment_method_title: payment_method === 'cod' ? 'Cash on Delivery' : 'Telegram Payment'
     }
     const res = await post("orders", body)
     return await res.json()
