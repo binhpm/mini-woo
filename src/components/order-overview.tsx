@@ -3,6 +3,20 @@ import React, { ChangeEvent } from 'react';
 import {useAppContext} from "@/providers/context-provider";
 import OrderItem from "@/components/order-item";
 
+interface ShippingInfo {
+    name: string;
+    email: string;
+    phone: string;
+    address: {
+        street_line1: string;
+        street_line2: string;
+        city: string;
+        state: string;
+        country_code: string;
+        post_code: string;
+    };
+}
+
 export default function OrderOverview() {
     const {state, dispatch} = useAppContext()
 
@@ -11,6 +25,14 @@ export default function OrderOverview() {
 
     const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         dispatch({type: "comment", comment: e.target.value})
+    }
+
+    const handleShippingInfoChange = (field: string, value: string) => {
+        dispatch({type: "shipping-info", field, value})
+    }
+
+    const handleAddressChange = (field: string, value: string) => {
+        dispatch({type: "shipping-address", field, value})
     }
 
     return (
@@ -46,12 +68,91 @@ export default function OrderOverview() {
                     </div>
                 </div>
             </div>
+            {state.paymentMethod === 'cod' && (
+                <div className="order-block shipping-info">
+                    <div className="order-header-wrap">
+                        <h2 className="order-header">Shipping Information</h2>
+                    </div>
+                    <div className="shipping-form">
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="Full Name *"
+                            onChange={(e) => handleShippingInfoChange('name', e.target.value)}
+                            value={state.shippingInfo?.name || ''}
+                            required
+                        />
+                        <input
+                            type="email"
+                            className="order-text-field"
+                            placeholder="Email"
+                            onChange={(e) => handleShippingInfoChange('email', e.target.value)}
+                            value={state.shippingInfo?.email || ''}
+                        />
+                        <input
+                            type="tel"
+                            className="order-text-field"
+                            placeholder="Phone Number *"
+                            onChange={(e) => handleShippingInfoChange('phone', e.target.value)}
+                            value={state.shippingInfo?.phone || ''}
+                            required
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="Street Address *"
+                            onChange={(e) => handleAddressChange('street_line1', e.target.value)}
+                            value={state.shippingInfo?.address?.street_line1 || ''}
+                            required
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="Apartment, suite, etc. (optional)"
+                            onChange={(e) => handleAddressChange('street_line2', e.target.value)}
+                            value={state.shippingInfo?.address?.street_line2 || ''}
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="City *"
+                            onChange={(e) => handleAddressChange('city', e.target.value)}
+                            value={state.shippingInfo?.address?.city || ''}
+                            required
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="State/Province"
+                            onChange={(e) => handleAddressChange('state', e.target.value)}
+                            value={state.shippingInfo?.address?.state || ''}
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="ZIP/Postal Code *"
+                            onChange={(e) => handleAddressChange('post_code', e.target.value)}
+                            value={state.shippingInfo?.address?.post_code || ''}
+                            required
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
+                            placeholder="Country Code (e.g., US) *"
+                            onChange={(e) => handleAddressChange('country_code', e.target.value)}
+                            value={state.shippingInfo?.address?.country_code || ''}
+                            required
+                        />
+                    </div>
+                </div>
+            )}
             <div className="order-text-field-wrap">
                 <textarea
                     className="order-text-field order-block"
                     rows={1}
                     placeholder="Add comment…"
                     onChange={handleCommentChange}
+                    value={state.comment || ''}
                 ></textarea>
                 <div className="order-text-field-hint">
                     Any special requests, details, final wishes etc.

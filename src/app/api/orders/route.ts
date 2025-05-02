@@ -13,6 +13,19 @@ interface OrderRequestBody {
     paymentMethod: 'cod' | 'telegram';
     comment?: string;
     shippingZone: number;
+    shippingInfo?: {
+        name: string;
+        email?: string;
+        phone?: string;
+        address: {
+            street_line1: string;
+            street_line2?: string;
+            city: string;
+            state?: string;
+            country_code: string;
+            post_code: string;
+        };
+    };
 }
 
 interface OrderResponse {
@@ -32,6 +45,12 @@ export async function POST(request: NextRequest) {
     }));
 
     const order = await woo.createOrder(line_items, body.comment || '', paymentMethod);
+
+    // Update shipping information if provided (for COD)
+    if (paymentMethod === 'cod' && body.shippingInfo) {
+        await woo.updateOrderInfo(order.id, body.shippingInfo);
+    }
+
     const response: OrderResponse = {
         order_id: order.id,
         status: 'pending',

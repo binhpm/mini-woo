@@ -165,3 +165,17 @@
 .payment-method.selected .payment-method-desc {
     color: rgba(255, 255, 255, 0.7);
 }
+
+.shipping-form {
+    padding: 5px 20px 20px;
+}
+
+.shipping-form .order-text-field {
+    margin-top: 12px;
+    border-radius: 8px;
+    background-color: var(--bg-color);
+}
+
+.shipping-form .order-text-field:first-child {
+    margin-top: 0;
+}

@@ -15,6 +15,8 @@ type Action =
     | { type: "dec", product: Product }
     | { type: "comment", comment: string }
     | { type: "payment-method", method: PaymentMethod }
+    | { type: "shipping-info", field: string, value: string }
+    | { type: "shipping-address", field: string, value: string }
 
 type Dispatch = (action: Action) => void
 
@@ -57,6 +59,19 @@ type State = {
     comment?: string,
     shippingZone: number,
     paymentMethod: PaymentMethod
+    shippingInfo: {
+        name: string
+        email?: string
+        phone?: string
+        address: {
+            street_line1: string
+            street_line2?: string
+            city: string
+            state?: string
+            country_code: string
+            post_code: string
+        }
+    }
 }
 
 const StateContext = React.createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
@@ -127,6 +142,23 @@ function contextReducer(state: State, action: Action) {
             state.paymentMethod = action.method
             break
         }
+        case 'shipping-info': {
+            state.shippingInfo = {
+                ...state.shippingInfo,
+                [action.field]: action.value
+            } as State['shippingInfo'] // Type assertion to satisfy TypeScript
+            break
+        }
+        case 'shipping-address': {
+            state.shippingInfo = {
+                ...state.shippingInfo,
+                address: {
+                    ...state.shippingInfo?.address,
+                    [action.field]: action.value
+                }
+            }
+            break
+        }
         default: {
             throw new Error(`Unhandled action: ${action}`)
         }
@@ -148,7 +180,20 @@ function ContextProvider({children}: {
         categories: [],
         cart: new Map<number, CartItem>(),
         shippingZone: 1,
-        paymentMethod: 'cod'
+        paymentMethod: 'cod',
+        shippingInfo: {
+            name: '',
+            email: '',
+            phone: '',
+            address: {
+                street_line1: '',
+                street_line2: '',
+                city: '',
+                state: '',
+                country_code: '',
+                post_code: ''
+            }
+        }
     }
     const [state, dispatch] = React.useReducer(contextReducer, init)
     // NOTE: you *might* need to memoize this value

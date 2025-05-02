@@ -17,8 +17,42 @@ export default function Home() {
     const {webApp, user} = useTelegram()
     const {state, dispatch} = useAppContext()
 
+    const validateShippingInfo = () => {
+        if (!state.shippingInfo?.name) {
+            webApp?.showAlert("Please enter your full name")
+            return false
+        }
+        if (!state.shippingInfo?.phone) {
+            webApp?.showAlert("Please enter your phone number")
+            return false
+        }
+        if (!state.shippingInfo?.address?.street_line1) {
+            webApp?.showAlert("Please enter your street address")
+            return false
+        }
+        if (!state.shippingInfo?.address?.city) {
+            webApp?.showAlert("Please enter your city")
+            return false
+        }
+        if (!state.shippingInfo?.address?.post_code) {
+            webApp?.showAlert("Please enter your postal code")
+            return false
+        }
+        if (!state.shippingInfo?.address?.country_code) {
+            webApp?.showAlert("Please enter your country code")
+            return false
+        }
+        return true
+    }
+
     const handleCheckout = useCallback(async () => {
         webApp?.MainButton.showProgress()
+        
+        if (state.paymentMethod === 'cod' && !validateShippingInfo()) {
+            webApp?.MainButton.hideProgress()
+            return
+        }
+
         const items: OrderItem[] = Array.from(state.cart.values()).map((item) => ({
             id: item.product.id,
             count: item.count
@@ -30,7 +64,8 @@ export default function Home() {
             comment: state.comment,
             shippingZone: state.shippingZone,
             paymentMethod: state.paymentMethod,
-            items
+            items,
+            shippingInfo: state.paymentMethod === 'cod' ? state.shippingInfo : undefined
         })
 
         try {
@@ -73,7 +108,7 @@ export default function Home() {
             webApp?.showAlert("An error occurred while processing your order!")
             webApp?.MainButton.hideProgress()
         }
-    }, [webApp, user, state.cart, state.comment, state.shippingZone, state.paymentMethod])
+    }, [webApp, user, state.cart, state.comment, state.shippingZone, state.paymentMethod, state.shippingInfo])
 
     useEffect(() => {
         const callback = state.mode === "order" ? handleCheckout :
