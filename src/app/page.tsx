@@ -60,6 +60,7 @@ export default function Home() {
         
         const body = JSON.stringify({
             userId: user?.id,
+            username: user?.username,  // Add username
             chatId: webApp?.initDataUnsafe.chat?.id,
             comment: state.comment,
             shippingZone: state.shippingZone,
@@ -82,6 +83,7 @@ export default function Home() {
                               `${state.shippingInfo?.address.city}, ${state.shippingInfo?.address.state || ''}\n` +
                               `${state.shippingInfo?.address.country_code} ${state.shippingInfo?.address.post_code}\n\n` +
                               `Contact:\n` +
+                              `${user?.username ? '@' + user.username + '\n' : ''}` +  // Add username to message
                               `Phone: ${state.shippingInfo?.phone}\n` +
                               `${state.shippingInfo?.email ? 'Email: ' + state.shippingInfo.email + '\n' : ''}` +
                               `\nPayment Method: Cash on Delivery\n` +

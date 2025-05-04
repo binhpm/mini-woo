@@ -10,6 +10,9 @@ interface OrderItem {
 
 interface OrderRequestBody {
     items: OrderItem[];
+    userId?: number;
+    username?: string;
+    chatId?: number;
     paymentMethod: 'cod' | 'telegram';
     comment?: string;
     shippingZone: number;
@@ -45,7 +48,12 @@ export async function POST(request: NextRequest) {
     }));
 
     // Create order first
-    const order = await woo.createOrder(line_items, body.comment || '', paymentMethod);
+    const order = await woo.createOrder(
+        line_items, 
+        body.comment || '', 
+        paymentMethod,
+        { username: body.username }
+    );
 
     // Update shipping information for COD orders
     if (paymentMethod === 'cod' && body.shippingInfo) {

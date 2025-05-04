@@ -4,9 +4,11 @@ import {fetchProducts, useAppContext} from "@/providers/context-provider";
 import {useEffect} from "react";
 import StoreCategories from "@/components/store-categories";
 import InfiniteScroll from "@/components/infinite-scroll";
+import {useTelegram} from "@/providers/telegram-provider";
 
 export default function StoreFront() {
     const {state, dispatch} = useAppContext()
+    const {user} = useTelegram()
 
     useEffect(() => {
         fetchProducts(state, dispatch)
@@ -18,6 +20,7 @@ export default function StoreFront() {
 
     return (
         <section className="store-products">
+            {user?.username && <div style={{width: '100%', padding: '10px', textAlign: 'center'}}>@{user.username}</div>}
             <StoreCategories/>
             {items}
             <InfiniteScroll
