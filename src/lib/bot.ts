@@ -22,7 +22,7 @@ bot.command('menu', (ctx) =>
         type: "web_app",
         web_app: {url: BASE_PATH},
     }))
-bot.on(message("text"), (ctx) => ctx.reply("Hi, I`m Mini Woo. It`s nice to meet you!:) /help"));
+bot.on(message("text"), (ctx) => ctx.reply("Hi, I`m NetViet Restaurant bot. It`s nice to meet you!:) /help"));
 
 bot.on("shipping_query", async (ctx) => {
     const payload = JSON.parse(ctx.update.shipping_query.invoice_payload)
