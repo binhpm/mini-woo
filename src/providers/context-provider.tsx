@@ -185,11 +185,11 @@ function ContextProvider({children}: {
         shippingZone: 1,
         paymentMethod: 'cod',
         shippingInfo: {
-            name: user?.username || 'Guest', // Remove @ prefix from initial state
+            name: user?.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : (user?.username || 'Guest'),
             email: 'default@example.com',
             phone: '0000000000',
             address: {
-                street_line1: '', // Only this will be empty for user input
+                street_line1: '',
                 street_line2: 'N/A',
                 city: 'Default City',
                 state: 'Default State',

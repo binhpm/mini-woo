@@ -77,6 +77,14 @@ export default function OrderOverview() {
                         <input
                             type="text"
                             className="order-text-field"
+                            placeholder="Full Name *"
+                            onChange={(e) => handleShippingInfoChange('name', e.target.value)}
+                            value={state.shippingInfo?.name || ''}
+                            required
+                        />
+                        <input
+                            type="text"
+                            className="order-text-field"
                             placeholder="Street Address *"
                             onChange={(e) => handleAddressChange('street_line1', e.target.value)}
                             value={state.shippingInfo?.address?.street_line1 || ''}
