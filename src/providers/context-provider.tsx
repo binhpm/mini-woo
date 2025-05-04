@@ -185,7 +185,7 @@ function ContextProvider({children}: {
         shippingZone: 1,
         paymentMethod: 'cod',
         shippingInfo: {
-            name: user?.username ? '@' + user.username : 'Guest',
+            name: user?.username || 'Guest', // Remove @ prefix from initial state
             email: 'default@example.com',
             phone: '0000000000',
             address: {

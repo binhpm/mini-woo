@@ -85,7 +85,7 @@ async function createOrder(line_items: any[], customer_note: string, payment_met
         meta_data: metadata?.username ? [
             {
                 key: 'telegram_username',
-                value: metadata.username
+                value: metadata.username // Remove @ prefix as it's already clean from the context provider
             }
         ] : undefined
     }

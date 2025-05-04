@@ -63,7 +63,7 @@ export default function Home() {
                               `${state.shippingInfo?.address.city}, ${state.shippingInfo?.address.state || ''}\n` +
                               `${state.shippingInfo?.address.country_code} ${state.shippingInfo?.address.post_code}\n\n` +
                               `Contact:\n` +
-                              `${user?.username ? '@' + user.username + '\n' : ''}` +  // Add username to message
+                              `${user?.username ? user.username : 'Guest'}\n` +  // Updated username display
                               `Phone: ${state.shippingInfo?.phone}\n` +
                               `${state.shippingInfo?.email ? 'Email: ' + state.shippingInfo.email + '\n' : ''}` +
                               `\nPayment Method: Cash on Delivery\n` +
