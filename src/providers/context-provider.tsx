@@ -186,11 +186,11 @@ function ContextProvider({children}: {
         paymentMethod: 'cod',
         shippingInfo: {
             name: user?.username ? '@' + user.username : 'Guest',
-            email: '',
+            email: 'default@example.com',
             phone: '0000000000',
             address: {
-                street_line1: '',
-                street_line2: '',
+                street_line1: '', // Only this will be empty for user input
+                street_line2: 'N/A',
                 city: 'Default City',
                 state: 'Default State',
                 country_code: 'US',

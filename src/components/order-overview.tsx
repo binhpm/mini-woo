@@ -77,70 +77,9 @@ export default function OrderOverview() {
                         <input
                             type="text"
                             className="order-text-field"
-                            placeholder="Full Name *"
-                            onChange={(e) => handleShippingInfoChange('name', e.target.value)}
-                            value={state.shippingInfo?.name || ''}
-                            required
-                        />
-                        <input
-                            type="email"
-                            className="order-text-field"
-                            placeholder="Email"
-                            onChange={(e) => handleShippingInfoChange('email', e.target.value)}
-                            value={state.shippingInfo?.email || ''}
-                        />
-                        <input
-                            type="tel"
-                            className="order-text-field"
-                            placeholder="Phone Number *"
-                            onChange={(e) => handleShippingInfoChange('phone', e.target.value)}
-                            value={state.shippingInfo?.phone || ''}
-                            required
-                        />
-                        <input
-                            type="text"
-                            className="order-text-field"
                             placeholder="Street Address *"
                             onChange={(e) => handleAddressChange('street_line1', e.target.value)}
                             value={state.shippingInfo?.address?.street_line1 || ''}
-                            required
-                        />
-                        <input
-                            type="text"
-                            className="order-text-field"
-                            placeholder="Apartment, suite, etc. (optional)"
-                            onChange={(e) => handleAddressChange('street_line2', e.target.value)}
-                            value={state.shippingInfo?.address?.street_line2 || ''}
-                        />
-                        <input
-                            type="text"
-                            className="order-text-field"
-                            placeholder="City *"
-                            onChange={(e) => handleAddressChange('city', e.target.value)}
-                            value={state.shippingInfo?.address?.city || ''}
-                            required
-                        />
-                        <input
-                            type="text"
-                            className="order-text-field"
-                            placeholder="State/Province"
-                            onChange={(e) => handleAddressChange('state', e.target.value)}
-                            value={state.shippingInfo?.address?.state || ''}
-                        />
-                        <input
-                            type="text"
-                            className="order-text-field"
-                            placeholder="ZIP/Postal Code *"
-                            onChange={(e) => handleAddressChange('post_code', e.target.value)}
-                            value={state.shippingInfo?.address?.post_code || ''}
-                            required
-                        />
-                        <input
-                            type="text"
-                            className="order-text-field"
-                            placeholder="Country Code (e.g., US) *"
-                            onChange={(e) => handleAddressChange('country_code', e.target.value)}
-                            value={state.shippingInfo?.address?.country_code || ''}
                             required
                         />
                     </div>
