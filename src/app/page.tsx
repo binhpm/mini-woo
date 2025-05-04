@@ -19,7 +19,7 @@ export default function Home() {
 
     const validateShippingInfo = () => {
         if (!state.shippingInfo?.name || !state.shippingInfo?.address?.street_line1) {
-            webApp?.showAlert("Please enter your name and street address")
+            webApp?.showAlert("Please enter street address")
             return false
         }
         return true
@@ -57,11 +57,11 @@ export default function Home() {
                 webApp?.MainButton.hideProgress()
                 const message = `Order #${result.order_id} has been placed successfully!\n\n` +
                               `Delivery Address:\n` +
-                              `${state.shippingInfo?.name}\n` +
+                            //   `${state.shippingInfo?.name}\n` +
                               `${state.shippingInfo?.address.street_line1}\n` +
-                              `${state.shippingInfo?.address.street_line2 ? state.shippingInfo?.address.street_line2 + '\n' : ''}` +
-                              `${state.shippingInfo?.address.city ? state.shippingInfo?.address.city + ', ' : ''}${state.shippingInfo?.address.state || ''}\n` +
-                              `${state.shippingInfo?.address.country_code || ''} ${state.shippingInfo?.address.post_code || ''}\n\n` +
+                            //   `${state.shippingInfo?.address.street_line2 ? state.shippingInfo?.address.street_line2 + '\n' : ''}` +
+                            //   `${state.shippingInfo?.address.city ? state.shippingInfo?.address.city + ', ' : ''}${state.shippingInfo?.address.state || ''}\n` +
+                            //   `${state.shippingInfo?.address.country_code || ''} ${state.shippingInfo?.address.post_code || ''}\n\n` +
                               `Contact:\n` +
                               `${user?.username ? '@' + user.username : (state.shippingInfo?.name || 'Guest')}\n` +
                               `${state.comment ? '\nOrder Notes:\n' + state.comment : ''}`

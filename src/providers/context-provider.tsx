@@ -174,7 +174,6 @@ function ContextProvider({children}: {
 }) {
     const { user } = useTelegram();
 
-    // Memoize the initial state to prevent recreating on every render
     const init = React.useMemo(() => ({
         mode: "storefront",
         loading: true,
@@ -186,16 +185,16 @@ function ContextProvider({children}: {
         shippingZone: 1,
         paymentMethod: 'cod',
         shippingInfo: {
-            name: '', // Will be set in useEffect
-            email: '',
-            phone: '',
+            name: user?.username || 'Guest',
+            email: 'default@example.com',
+            phone: '0000000000',
             address: {
                 street_line1: '',
-                street_line2: '',
-                city: '',
-                state: '',
-                country_code: '',
-                post_code: ''
+                street_line2: 'N/A',
+                city: 'Default City',
+                state: 'Default State',
+                country_code: 'US',
+                post_code: '00000'
             }
         }
     } as State), []);
@@ -204,15 +203,12 @@ function ContextProvider({children}: {
 
     // Update shipping info when user data changes
     React.useEffect(() => {
-        if (user) {
-            const name = user.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : user.username || '';
-            if (name) {
-                dispatch({
-                    type: 'shipping-info',
-                    field: 'name',
-                    value: name
-                });
-            }
+        if (user?.username) {
+            dispatch({
+                type: 'shipping-info',
+                field: 'name',
+                value: `@${user.username}`
+            });
         }
     }, [user]);
 

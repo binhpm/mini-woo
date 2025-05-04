@@ -9,9 +9,13 @@ export interface ITelegramContext {
 
 export const TelegramContext = createContext<ITelegramContext>({});
 
-export function TelegramProvider({children}: {children: React.ReactNode}) {
+export function TelegramProvider({
+                                     children,
+                                 }: {
+    children: React.ReactNode
+}) {
+
     const [webApp, setWebApp] = useState<WebApp | null>(null);
-    const [user, setUser] = useState<WebAppUser | undefined>(undefined);
 
     useEffect(() => {
         const telegram: Telegram | null = (window as any).Telegram;
@@ -19,19 +23,22 @@ export function TelegramProvider({children}: {children: React.ReactNode}) {
         if (app) {
             app.ready();
             setWebApp(app);
-            if (app.initDataUnsafe?.user) {
-                setUser(app.initDataUnsafe.user);
-            }
         }
     }, []);
 
-    const value = useMemo(() => ({
-        webApp,
-        user
-    }), [webApp, user]);
+    const value = useMemo(() => {
+        return webApp
+            ? {
+                webApp,
+                unsafeData: webApp.initDataUnsafe,
+                user: webApp.initDataUnsafe.user,
+            }
+            : {};
+    }, [webApp]);
 
     return (
         <TelegramContext.Provider value={value}>
+            {/* Make sure to include script tag with "beforeInteractive" strategy to preload web-app script */}
             <Script
                 src="https://telegram.org/js/telegram-web-app.js"
                 strategy="beforeInteractive"
