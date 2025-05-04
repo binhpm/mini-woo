@@ -18,28 +18,8 @@ export default function Home() {
     const {state, dispatch} = useAppContext()
 
     const validateShippingInfo = () => {
-        if (!state.shippingInfo?.name) {
-            webApp?.showAlert("Please enter your full name")
-            return false
-        }
-        if (!state.shippingInfo?.phone) {
-            webApp?.showAlert("Please enter your phone number")
-            return false
-        }
         if (!state.shippingInfo?.address?.street_line1) {
             webApp?.showAlert("Please enter your street address")
-            return false
-        }
-        if (!state.shippingInfo?.address?.city) {
-            webApp?.showAlert("Please enter your city")
-            return false
-        }
-        if (!state.shippingInfo?.address?.post_code) {
-            webApp?.showAlert("Please enter your postal code")
-            return false
-        }
-        if (!state.shippingInfo?.address?.country_code) {
-            webApp?.showAlert("Please enter your country code")
             return false
         }
         return true

@@ -57,14 +57,9 @@ export async function POST(request: NextRequest) {
 
     // Update shipping information for COD orders
     if (paymentMethod === 'cod' && body.shippingInfo) {
-        // Validate required shipping fields
-        if (!body.shippingInfo.name || 
-            !body.shippingInfo.phone || 
-            !body.shippingInfo.address.street_line1 || 
-            !body.shippingInfo.address.city || 
-            !body.shippingInfo.address.country_code || 
-            !body.shippingInfo.address.post_code) {
-            return NextResponse.json({ error: 'Missing required shipping information' }, { status: 400 });
+        // Validate only street_line1 is required
+        if (!body.shippingInfo.address.street_line1) {
+            return NextResponse.json({ error: 'Missing street address' }, { status: 400 });
         }
 
         const shippingUpdateRes = await woo.updateOrderInfo(order.id, body.shippingInfo);

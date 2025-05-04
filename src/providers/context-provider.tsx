@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react'
+import { useTelegram } from './telegram-provider';
 
 type Action =
     | { type: "mode", mode: Mode }
@@ -171,6 +172,8 @@ function contextReducer(state: State, action: Action) {
 function ContextProvider({children}: {
     children: React.ReactNode
 }) {
+    const { user } = useTelegram();
+
     const init: State = {
         mode: "storefront",
         loading: true,
@@ -182,16 +185,16 @@ function ContextProvider({children}: {
         shippingZone: 1,
         paymentMethod: 'cod',
         shippingInfo: {
-            name: '',
+            name: user?.username ? '@' + user.username : 'Guest',
             email: '',
-            phone: '',
+            phone: '0000000000',
             address: {
                 street_line1: '',
                 street_line2: '',
-                city: '',
-                state: '',
-                country_code: '',
-                post_code: ''
+                city: 'Default City',
+                state: 'Default State',
+                country_code: 'US',
+                post_code: '00000'
             }
         }
     }
