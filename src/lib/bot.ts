@@ -76,7 +76,7 @@ bot.on(message("successful_payment"), async (ctx) => {
     if (res.status === 200) {
         ctx.reply("Order successfully registered!")
         // Send thank you image
-        const imageUrl = process.env.THANK_YOU_IMAGE_URL || `${BASE_PATH}/thank-you.png`; // Update with your image URL or path
+        const imageUrl = "https://order.shopguitarcaugiay.vn/wp-content/uploads/2025/10/qr.jpg"; // Update with your image URL or path
         await ctx.replyWithPhoto(imageUrl, { caption: 'Thank you for your order!' });
     } else
         ctx.reply(`Error registering payment, contact support!\n
