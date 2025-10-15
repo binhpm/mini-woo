@@ -59,13 +59,6 @@ export default function OrderOverview() {
                         <span className="payment-method-title">Cash on Delivery</span>
                         <span className="payment-method-desc">Pay when you receive your order</span>
                     </div>
-                    <div
-                        className={`payment-method ${state.paymentMethod === 'telegram' ? 'selected' : ''}`}
-                        onClick={() => dispatch({ type: "payment-method", method: 'telegram' })}
-                    >
-                        <span className="payment-method-title">Pay via Telegram</span>
-                        <span className="payment-method-desc">Secure payment through Telegram</span>
-                    </div>
                 </div>
             </div>
             {state.paymentMethod === 'cod' && (
