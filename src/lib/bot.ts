@@ -75,6 +75,9 @@ bot.on(message("successful_payment"), async (ctx) => {
     const res = await woo.setOrderPaid(payload.orderId)
     if (res.status === 200) {
         ctx.reply("Order successfully registered!")
+        // Send thank you image
+        const imageUrl = process.env.THANK_YOU_IMAGE_URL || `${BASE_PATH}/thank-you.png`; // Update with your image URL or path
+        await ctx.replyWithPhoto(imageUrl, { caption: 'Thank you for your order!' });
     } else
         ctx.reply(`Error registering payment, contact support!\n
         orderId:${payload.orderId}\n
