@@ -13,7 +13,7 @@ interface OrderRequestBody {
     userId?: number;
     username?: string;
     chatId?: number;
-    paymentMethod: 'cod' | 'telegram';
+    paymentMethod: 'cod';
     comment?: string;
     shippingZone: number;
     shippingInfo?: {
@@ -34,7 +34,7 @@ interface OrderRequestBody {
 interface OrderResponse {
     order_id: number;
     status: 'pending';
-    payment_method: 'cod' | 'telegram';
+    payment_method: 'cod';
     invoice_link?: string;
 }
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const response: OrderResponse = {
         order_id: order.id,
         status: 'pending',
-        payment_method: paymentMethod as 'cod' | 'telegram'
+        payment_method: paymentMethod as 'cod'
     };
 
     if (paymentMethod === 'cod') {
@@ -79,23 +79,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Handle Telegram payment
-    const telegramCurrency = telegramCurrencies[order.currency as keyof typeof telegramCurrencies];
-    if (!telegramCurrency) {
-        throw new Error(`Unsupported currency: ${order.currency}`);
-    }
+    // const telegramCurrency = telegramCurrencies[order.currency as keyof typeof telegramCurrencies];
+    // if (!telegramCurrency) {
+    //     throw new Error(`Unsupported currency: ${order.currency}`);
+    // }
 
-    const prices = order.line_items.map((item) => ({
-        label: `${item.name} (x${item.quantity})`,
-        amount: parseFloat(item.total) * Math.pow(10, telegramCurrency.exp)
-    }));
+    // const prices = order.line_items.map((item) => ({
+    //     label: `${item.name} (x${item.quantity})`,
+    //     amount: parseFloat(item.total) * Math.pow(10, telegramCurrency.exp)
+    // }));
 
-    response.invoice_link = await createInvoiceLink(
-        order.id, 
-        order.order_key,
-        telegramCurrency.code, 
-        prices, 
-        body.shippingZone
-    );
+    // response.invoice_link = await createInvoiceLink(
+    //     order.id, 
+    //     order.order_key,
+    //     telegramCurrency.code, 
+    //     prices, 
+    //     body.shippingZone
+    // );
 
     return NextResponse.json(response);
 }
