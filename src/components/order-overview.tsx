@@ -1,5 +1,5 @@
 "use client"
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useAppContext } from "@/providers/context-provider";
 import OrderItem from "@/components/order-item";
 
@@ -19,6 +19,7 @@ interface ShippingInfo {
 
 export default function OrderOverview() {
     const { state, dispatch } = useAppContext()
+    const [showQRModal, setShowQRModal] = useState(false)
 
     const items = Array.from(state.cart.values())
         .map((cartItem) => <OrderItem key={cartItem.product.id} id={cartItem.product.id} />)
@@ -92,8 +93,32 @@ export default function OrderOverview() {
             </div>
             
             <div className="qr-code-section">
-                <img src="/qr.jpg" alt="QR Code" />
+                <img 
+                    src="/qr.jpg" 
+                    alt="QR Code" 
+                    className="qr-code-image"
+                    onClick={() => setShowQRModal(true)}
+                />
             </div>
+
+            {/* QR Code Modal */}
+            {showQRModal && (
+                <div className="qr-modal-overlay" onClick={() => setShowQRModal(false)}>
+                    <div className="qr-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button 
+                            className="qr-modal-close" 
+                            onClick={() => setShowQRModal(false)}
+                        >
+                            ×
+                        </button>
+                        <img 
+                            src="/qr.jpg" 
+                            alt="QR Code - Enlarged" 
+                            className="qr-code-enlarged"
+                        />
+                    </div>
+                </div>
+            )}
         </section>
     )
 }
