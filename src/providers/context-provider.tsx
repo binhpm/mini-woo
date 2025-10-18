@@ -22,7 +22,7 @@ type Action =
 type Dispatch = (action: Action) => void
 
 type Mode = 'storefront' | 'order' | 'item'
-type PaymentMethod = 'cod' | 'telegram'
+type PaymentMethod = 'prepayment' | 'telegram'
 
 export type CartItem = {
     product: Product,
@@ -183,7 +183,7 @@ function ContextProvider({children}: {
         categories: [],
         cart: new Map<number, CartItem>(),
         shippingZone: 1,
-        paymentMethod: 'cod',
+        paymentMethod: 'prepayment',
         shippingInfo: {
             name: user?.username || 'Guest',
             email: 'default@example.com',

@@ -28,7 +28,7 @@ export default function Home() {
     const handleCheckout = useCallback(async () => {
         webApp?.MainButton.showProgress()
         
-        if (state.paymentMethod === 'cod' && !validateShippingInfo()) {
+        if (state.paymentMethod === 'prepayment' && !validateShippingInfo()) {
             webApp?.MainButton.hideProgress()
             return
         }
@@ -46,14 +46,14 @@ export default function Home() {
             shippingZone: state.shippingZone,
             paymentMethod: state.paymentMethod,
             items,
-            shippingInfo: state.paymentMethod === 'cod' ? state.shippingInfo : undefined
+            shippingInfo: state.paymentMethod === 'prepayment' ? state.shippingInfo : undefined
         })
 
         try {
             const res = await fetch("api/orders", {method: "POST", body})
             const result = await res.json()
 
-            if (result.payment_method === 'cod') {
+            if (result.payment_method === 'prepayment') {
                 webApp?.MainButton.hideProgress()
                 const message = `Order #${result.order_id} has been placed successfully!\n\n` +
                               `Delivery Address:\n` +

@@ -53,15 +53,15 @@ export default function OrderOverview() {
                 </div>
                 <div className="payment-methods">
                     <div
-                        className={`payment-method ${state.paymentMethod === 'cod' ? 'selected' : ''}`}
-                        onClick={() => dispatch({ type: "payment-method", method: 'cod' })}
+                        className={`payment-method ${state.paymentMethod === 'prepayment' ? 'selected' : ''}`}
+                        onClick={() => dispatch({ type: "payment-method", method: 'prepayment' })}
                     >
-                        <span className="payment-method-title">Cash on Delivery</span>
-                        <span className="payment-method-desc">Pay when you receive your order</span>
+                        <span className="payment-method-title">Prepayment is required</span>
+                        {/* <span className="payment-method-desc">Pay when you receive your order</span> */}
                     </div>
                 </div>
             </div>
-            {state.paymentMethod === 'cod' && (
+            {state.paymentMethod === 'prepayment' && (
                 <div className="order-block shipping-info">
                     <div className="order-header-wrap">
                         <h2 className="order-header">Shipping Information</h2>
@@ -89,6 +89,10 @@ export default function OrderOverview() {
                 <div className="order-text-field-hint">
                     Any special requests, details, final wishes etc.
                 </div>
+            </div>
+            
+            <div className="qr-code-section">
+                <img src="/qr.jpg" alt="QR Code" />
             </div>
         </section>
     )

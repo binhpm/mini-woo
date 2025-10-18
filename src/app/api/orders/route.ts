@@ -13,7 +13,7 @@ interface OrderRequestBody {
     userId?: number;
     username?: string;
     chatId?: number;
-    paymentMethod: 'cod';
+    paymentMethod: 'prepayment';
     comment?: string;
     shippingZone: number;
     shippingInfo?: {
@@ -34,13 +34,13 @@ interface OrderRequestBody {
 interface OrderResponse {
     order_id: number;
     status: 'pending';
-    payment_method: 'cod';
+    payment_method: 'prepayment';
     invoice_link?: string;
 }
 
 export async function POST(request: NextRequest) {
     const body = await request.json() as OrderRequestBody;
-    const paymentMethod = body.paymentMethod || 'cod';
+    const paymentMethod = body.paymentMethod || 'prepayment';
 
     const line_items = body.items.map((item) => ({
         product_id: item.id,
@@ -55,8 +55,8 @@ export async function POST(request: NextRequest) {
         { username: body.username }
     );
 
-    // Update shipping information for COD orders
-    if (paymentMethod === 'cod' && body.shippingInfo) {
+    // Update shipping information for prepayment orders
+    if (paymentMethod === 'prepayment' && body.shippingInfo) {
         // Validate only street_line1 is required
         if (!body.shippingInfo.address.street_line1) {
             return NextResponse.json({ error: 'Missing street address' }, { status: 400 });
@@ -71,10 +71,10 @@ export async function POST(request: NextRequest) {
     const response: OrderResponse = {
         order_id: order.id,
         status: 'pending',
-        payment_method: paymentMethod as 'cod'
+        payment_method: paymentMethod as 'prepayment'
     };
 
-    if (paymentMethod === 'cod') {
+    if (paymentMethod === 'prepayment') {
         return NextResponse.json(response);
     }
 

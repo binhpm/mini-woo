@@ -75,13 +75,13 @@ function call(method: string, api: string, query?: URLSearchParams, body?: any) 
     return fetch(url, init);
 }
 
-async function createOrder(line_items: any[], customer_note: string, payment_method: string = 'cod', metadata?: { username?: string }): Promise<WooCommerceOrder> {
+async function createOrder(line_items: any[], customer_note: string, payment_method: string = 'prepayment', metadata?: { username?: string }): Promise<WooCommerceOrder> {
     const body = {
         "set_paid": false,
         line_items,
         customer_note,
         payment_method,
-        payment_method_title: payment_method === 'cod' ? 'Cash on Delivery' : 'Telegram Payment',
+        payment_method_title: payment_method === 'prepayment' ? 'Prepayment' : 'Telegram Payment',
         meta_data: metadata?.username ? [
             {
                 key: 'telegram_username',

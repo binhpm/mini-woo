@@ -15,13 +15,19 @@ bot.start((ctx) => {
         Markup.inlineKeyboard([Markup.button.webApp("View Menu", BASE_PATH)]),
     )
 });
-bot.help((ctx) => ctx.reply("Test /start or /menu command!"))
+bot.help((ctx) => ctx.reply("Test /start or /menu or /paymentinfo command!"))
 bot.command('menu', (ctx) =>
     ctx.setChatMenuButton({
         text: "Store",
         type: "web_app",
         web_app: {url: BASE_PATH},
     }))
+bot.command('paymentinfo', async (ctx) => {
+    const imageUrl = "https://order.shopguitarcaugiay.vn/wp-content/uploads/2025/10/qr.jpg";
+    await ctx.replyWithPhoto(imageUrl, { 
+        caption: 'Payment Information\n\nScan the QR code above for payment details or contact us for more information.' 
+    });
+})
 bot.on(message("text"), (ctx) => ctx.reply("Hi, I`m NetViet Restaurant bot. It`s nice to meet you!:) /help"));
 
 bot.on("shipping_query", async (ctx) => {
